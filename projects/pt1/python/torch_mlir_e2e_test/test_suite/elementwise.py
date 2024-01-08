@@ -335,6 +335,26 @@ class ElementwiseWhereScalarSelfStaticModule(torch.nn.Module):
 def ElementwiseWhereScalarSelfStaticModule_basic(module, tu: TestUtils):
     module.forward(tu.rand(3, 4, 5).double(), tu.rand(4, 5).double())
 
+# ==============================================================================
+
+
+class ElementwiseNanToNanSelfModule(torch.nn.Module):
+
+    def __init__(self):
+        super().__init__()
+
+    @export
+    @annotate_args([
+        None,
+        ([3], torch.float32, True),
+        ([], torch.float32, True)
+    ])
+    def forward(self, a ,b):
+        return torch.aten.nan_to_num(a, b)
+    
+@register_test_case(module_factory=lambda: ElementwiseNanToNanSelfModule())
+def ElementwiseATenNanToNumSelfModule_Basic(module, tu: TestUtils):
+    module.forward(torch.tensor([float('nan'), 0.0, float('nan'), 0.0]), 0.0)
 
 # ==============================================================================
 
