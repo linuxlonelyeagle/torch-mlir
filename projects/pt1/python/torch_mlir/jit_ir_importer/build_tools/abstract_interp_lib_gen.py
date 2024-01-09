@@ -1040,6 +1040,9 @@ def aten〇where〇ScalarOther〡shape(condition: List[int], self: List[int], ot
 def aten〇where〇ScalarSelf〡shape(condition: List[int], self: float, other: List[int]) -> List[int]:
     return upstream_shape_functions.broadcast(condition, other)
 
+def aten〇nan_to_num〡shape(self: List[int], nan: Optional[float] = None, posinf: Optional[float] = None, neginf: Optional[float] = None) -> List[int]:
+    return upstream_shape_functions.unary(self)
+
 def aten〇lerp〇Tensor〡shape(self: List[int], end: List[int], weight: List[int]) -> List[int]:
     return upstream_shape_functions.broadcast(self, upstream_shape_functions.broadcast(end, weight))
 
@@ -3193,6 +3196,14 @@ def aten〇where〇ScalarSelf〡dtype(condition_rank_dtype: Tuple[int, int], sel
     other_rank, other_dtype = other_rank_dtype
     ranks: List[Optional[int]] = [None, other_rank]
     dtypes = [get_dtype_of_scalar(self), other_dtype]
+    return promote_dtypes(ranks, dtypes)
+
+#@check_dtype_function(
+#        [Invocation(NonZeroDTensorWithDtype(torch.float32), torch.float32, torch.float32, torch.float32)])
+def aten〇nan_to_num〡dtype(self_rank_dtype: Tuple[int, int], nan: Optional[float] = None, posinf: Optional[float] = None, neginf: Optional[float] = None) -> int:
+    self_rank, self_dtype = self_rank_dtype
+    ranks: List[Optional[int]] = [self_rank]
+    dtypes = [self_dtype]
     return promote_dtypes(ranks, dtypes)
 
 @check_dtype_function(

@@ -638,6 +638,7 @@ def emit_ops(emitter_td: TextEmitter, registry: Registry):
     emit("aten::where.Scalar : (Tensor, Scalar, Scalar) -> (Tensor)")
     emit("aten::where.ScalarOther : (Tensor, Tensor, Scalar) -> (Tensor)")
     emit("aten::where.ScalarSelf : (Tensor, Scalar, Tensor) -> (Tensor)")
+    emit("aten::nan_to_num : (Tensor, float?, float?, float?) -> (Tensor)")
     emit("aten::slice.Tensor : (Tensor, int, int?, int?, int) -> (Tensor)", has_folder=True)
     emit("aten::len.Tensor : (Tensor) -> (int)")
     emit("aten::cpu : (Tensor) -> (Tensor)")

@@ -6331,6 +6331,28 @@ public:
 } // namespace
 
 namespace {
+class DecomposeAtenNanToNumOp : public OpRewritePattern<AtenNanToNumOp> {
+public:
+  using OpRewritePattern::OpRewritePattern;
+  LogicalResult matchAndRewrite(AtenNanToNumOp op,
+                                PatternRewriter &rewriter) const override {
+    Location loc = op.getLoc();
+    Value nan = op.getNan();
+    Value posinf = op.getPosinf();
+    Value neginf = op.getNeginf();
+    if (nan.getType().isa<Torch::NoneType>())
+      nan = rewriter.create<Torch::ConstantFloatOp>(loc, rewriter.getF64FloatAttr(0));
+    if (posinf.getType().isa<Torch::NoneType>())
+      posinf = rewriter.create<Torch::ConstantFloatOp>(loc, rewriter.getF64FloatAttr(__DBL_MAX__));
+    if (neginf.getType().isa<Torch::NoneType>())
+      neginf = rewriter.create<Torch::ConstantFloatOp>(loc, rewriter.getF64FloatAttr(__DBL_MIN__));
+    
+    return success();
+  }
+};  
+}
+
+namespace {
 // Unconditionally decompose `aten.reshape_as` into `aten.size` +
 // `aten.reshape`.
 class DecomposeAtenReshapeAsOp : public OpRewritePattern<AtenReshapeAsOp> {

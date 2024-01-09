@@ -10378,6 +10378,32 @@ def Torch_AtenWhereScalarSelfOp : Torch_Op<"aten.where.ScalarSelf", [
   }];
 }
 
+def Torch_AtenNanToNumOp : Torch_Op<"aten.nan_to_num", [
+    AllowsTypeRefinement,
+    HasValueSemantics,
+    ReadOnly
+  ]> {
+  let summary = "Generated op for `aten::nan_to_num : (Tensor, float?, float?, float?) -> (Tensor)`";
+  let arguments = (ins
+    AnyTorchTensorType:$self,
+    AnyTorchOptionalFloatType:$nan,
+    AnyTorchOptionalFloatType:$posinf,
+    AnyTorchOptionalFloatType:$neginf
+  );
+  let results = (outs
+    AnyTorchTensorType:$result
+  );
+  let hasCustomAssemblyFormat = 1;
+  let extraClassDefinition = [{
+    ParseResult AtenNanToNumOp::parse(OpAsmParser &parser, OperationState &result) {
+      return parseDefaultTorchOp(parser, result, 4, 1);
+    }
+    void AtenNanToNumOp::print(OpAsmPrinter &printer) {
+      printDefaultTorchOp(printer, *this, 4, 1);
+    }
+  }];
+}
+
 def Torch_AtenSliceTensorOp : Torch_Op<"aten.slice.Tensor", [
     AllowsTypeRefinement,
     ReadOnly

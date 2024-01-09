@@ -353,7 +353,7 @@ class ElementwiseNanToNanSelfModule(torch.nn.Module):
         return torch.aten.nan_to_num(a, b)
     
 @register_test_case(module_factory=lambda: ElementwiseNanToNanSelfModule())
-def ElementwiseATenNanToNumSelfModule_Basic(module, tu: TestUtils):
+def ElementwiseNanToNumSelfModule_Basic(module, tu: TestUtils):
     module.forward(torch.tensor([float('nan'), 0.0, float('nan'), 0.0]), 0.0)
 
 # ==============================================================================
